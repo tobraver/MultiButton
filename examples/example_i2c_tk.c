@@ -54,11 +54,11 @@ void btn_double_press_handle(void* hdl)
     struct Button* btn = (struct Button*)hdl;
     tk_btn_mask_t tk_mask = btn->button_id;
     
-    if(btn->button_id == TK_BTN_MASK_0)
+    if(tk_mask == TK_BTN_MASK_0)
     {
 
     }
-    else if(btn->button_id == TK_BTN_MASK_1) 
+    else if(tk_mask == TK_BTN_MASK_1) 
     {
 
     }
@@ -69,11 +69,11 @@ void btn_long_press_handle(void* hdl)
     struct Button* btn = (struct Button*)hdl;
     tk_btn_mask_t tk_mask = btn->button_id;
     
-    if(btn->button_id == TK_BTN_MASK_0)
+    if(tk_mask == TK_BTN_MASK_0)
     {
 
     }
-    else if(btn->button_id == TK_BTN_MASK_1) 
+    else if(tk_mask == TK_BTN_MASK_1) 
     {
 
     }
