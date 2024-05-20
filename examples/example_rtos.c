@@ -8,6 +8,7 @@
 
 int main(int argc, char const *argv[])
 {
+    /*! 任务优先级尽可能高, 确保任务能正常调度, 从而保证按键任务的正常扫描 */
     xTaskCreate(btn_task_handler, "btn_task", 1024 * 3, NULL, 6, NULL);
     return 0;
 }
