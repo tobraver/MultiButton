@@ -21,7 +21,7 @@ static void button_handler(struct Button* handle);
   * @param  button_id: the button id.
   * @retval None
   */
-void button_init(struct Button* handle, uint8_t(*pin_level)(uint8_t), uint8_t active_level, uint8_t button_id)
+void button_init(struct Button* handle, uint8_t(*pin_level)(uint8_t), uint8_t active_level, uint8_t button_id, uint16_t short_ticks, uint16_t long_ticks)
 {
 	memset(handle, 0, sizeof(struct Button));
 	handle->event = (uint8_t)NONE_PRESS;
@@ -29,6 +29,8 @@ void button_init(struct Button* handle, uint8_t(*pin_level)(uint8_t), uint8_t ac
 	handle->button_level = !active_level;
 	handle->active_level = active_level;
 	handle->button_id = button_id;
+	handle->short_ticks = short_ticks;
+	handle->long_ticks = long_ticks;
 }
 
 /**
@@ -96,7 +98,7 @@ static void button_handler(struct Button* handle)
 			EVENT_CB(PRESS_UP);
 			handle->ticks = 0;
 			handle->state = 2;
-		} else if(handle->ticks > LONG_TICKS) {
+		} else if(handle->ticks > handle->long_ticks) {
 			handle->event = (uint8_t)LONG_PRESS_START;
 			EVENT_CB(LONG_PRESS_START);
 			handle->state = 5;
@@ -113,7 +115,7 @@ static void button_handler(struct Button* handle)
 			EVENT_CB(PRESS_REPEAT); // repeat hit
 			handle->ticks = 0;
 			handle->state = 3;
-		} else if(handle->ticks > SHORT_TICKS) { //released timeout
+		} else if(handle->ticks > handle->short_ticks) { //released timeout
 			if(handle->repeat == 1) {
 				handle->event = (uint8_t)SINGLE_CLICK;
 				EVENT_CB(SINGLE_CLICK);
@@ -129,13 +131,13 @@ static void button_handler(struct Button* handle)
 		if(handle->button_level != handle->active_level) { //released press up
 			handle->event = (uint8_t)PRESS_UP;
 			EVENT_CB(PRESS_UP);
-			if(handle->ticks < SHORT_TICKS) {
+			if(handle->ticks < handle->short_ticks) {
 				handle->ticks = 0;
 				handle->state = 2; //repeat press
 			} else {
 				handle->state = 0;
 			}
-		} else if(handle->ticks > SHORT_TICKS) { // SHORT_TICKS < press down hold time < LONG_TICKS
+		} else if(handle->ticks > handle->short_ticks) { // SHORT_TICKS < press down hold time < LONG_TICKS
 			handle->state = 1;
 		}
 		break;
